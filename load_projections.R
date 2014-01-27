@@ -1,6 +1,10 @@
+# This file is intended only to be run when you need to update the projections.
+# The data is scraped from ESPN and saved into projections.RData
+
 library(XML)
 library(reshape2)
 
+# Function to load ESPN's projected statistics
 load_data <- function() {
   # Load ESPN's hitting projections.
   # This function is not particularly efficient, but it works.
@@ -50,4 +54,12 @@ load_data <- function() {
   projections.df$Pos3 <- as.factor(projections.df$Pos3)
   projections.df$Pos4 <- as.factor(projections.df$Pos4)
   projections.df$Pos5 <- as.factor(projections.df$Pos5)
+  
+  projections.df
 }
+
+# Load data
+projections.df <- load_data()
+
+# Save data frame to an .Rdata file
+save(projections.df, file='projections.R')
