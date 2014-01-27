@@ -20,11 +20,31 @@ for(i in seq(40, 400, 40)) {
   projections.df <- rbind(projections.df, tmp)
 }
 
-original.df <- projections.df
 
-# Split the name column into name, team, & position
-# BUG: team column isn't splitting into team/position like I want it to
+# Split the player column into useful pieces.
+# There's probably a more efficient way to do this, but I'm learning.
+
+# Remove injury status
+projections.df[,c('Player')] <- 
+  str_split_fixed(projections.df$Player, "  ", 2)[,1]
+
+# Split off player name
 projections.df[,c('Player', 'Team')] <- 
   str_split_fixed(projections.df$Player, ", ", 2)
+
+# Split off team
 projections.df[,c('Team', 'Pos')] <- 
-  str_split_fixed(projections.df$Team, " ", 2)
+  str_split_fixed(projections.df$Team, " ", 2)
+
+# Split off positions
+projections.df[,c('Pos', 'Pos2', 'Pos3', 'Pos4', 'Pos5')] <- 
+  str_split_fixed(projections.df$Pos, ", ", 5)
+
+
+# Convert positions and teams to factors
+projections.df$Team <- as.factor(projections.df$Team)
+projections.df$Pos <- as.factor(projections.df$Pos)
+projections.df$Pos2 <- as.factor(projections.df$Pos2)
+projections.df$Pos3 <- as.factor(projections.df$Pos3)
+projections.df$Pos4 <- as.factor(projections.df$Pos4)
+projections.df$Pos5 <- as.factor(projections.df$Pos5)
