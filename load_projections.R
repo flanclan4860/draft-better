@@ -3,6 +3,7 @@
 
 library(XML)
 library(reshape2)
+source('settings.R', local=TRUE)
 
 # Function to load ESPN's projected statistics
 load_data <- function() {
@@ -59,7 +60,14 @@ load_data <- function() {
   n <- dim(projections.df)[1]
   projections.df <- cbind(projections.df,
                           drafted=rep(NA, n),
-                          fantasyTeam=rep(NA, n))
+                          fantasyTeam=rep('', n))
+  
+  # Set fantasy teams as factors
+  projections.df$fantasyTeam <- as.factor(projections.df$fantasyTeam,
+                                          levels=teams)
+  
+  # Set draft pick as integer
+  projections.df$drafted <- as.integer(projections.df$drafted)
   
   projections.df
 }
