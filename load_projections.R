@@ -55,11 +55,17 @@ load_data <- function() {
   projections.df$Pos4 <- as.factor(projections.df$Pos4)
   projections.df$Pos5 <- as.factor(projections.df$Pos5)
   
+  # Add columns for drafted and fantasyTeam
+  n <- dim(projections.df)[1]
+  projections.df <- cbind(projections.df,
+                          drafted=rep(NA, n),
+                          fantasyTeam=rep(NA, n))
+  
   projections.df
 }
 
 # Load data
 projections.df <- load_data()
 
-# Save data frame to an .Rdata file
-save(projections.df, file='projections.R')
+# Save data frame to an .rds file
+saveRDS(projections.df, file='projections.rds')

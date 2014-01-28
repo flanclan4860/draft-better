@@ -2,9 +2,11 @@ library(shiny)
 
 # Globally define reactive data.
 vars <- reactiveValues()
-
-# Load the projection data.
 vars$projections.df <- readRDS('projections.rds')
+vars$draft <- 1
+
+# Load the draft settings
+source('settings.R', local=TRUE)
 
 shinyServer(function(input, output) {
   
@@ -13,10 +15,19 @@ shinyServer(function(input, output) {
     if (input$add == 0) {
       return()
     }
-
-    vars$projections.df[vars$projections.df$Player == 
-                  isolate(input$draftPlayer), 8] <- isolate(input$team)
-    saveRDS(vars$projections.df,file='projections.rds')
+    
+    isolate({
+      # Save changes to data frame, save data frame to .rds file
+      # I think there is a better way to do this...
+      vars$projections.df[vars$projections.df$Player == 
+                    input$draftPlayer, 9] <- input$team
+      vars$projections.df[vars$projections.df$Player == 
+                    input$draftPlayer, 8] <- vars$draft
+      saveRDS(vars$projections.df,file='projections.rds')
+      
+      # Increment draft counter
+      vars$draft <- vars$draft + 1
+    })
   })
   
   # Render table of all players
@@ -31,6 +42,7 @@ shinyServer(function(input, output) {
     subset(vars$projections.df, fantasyTeam == input$team)
   })
   
+  # Render UI for the list of undrafted players
   output$undraftedPlayers <- renderUI({
     draftPlayer()
     
