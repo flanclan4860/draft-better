@@ -1,7 +1,10 @@
 library(shiny)
 
+# Globally define reactive data.
+vars <- reactiveValues()
+
 # Load the projection data.
-load('projections.RData')
+vars$projections.df <- readRDS('projections.rds')
 
 shinyServer(function(input, output) {
   
@@ -10,29 +13,29 @@ shinyServer(function(input, output) {
     if (input$add == 0) {
       return()
     }
-    projections.df[projections.df$Player == isolate(input$draftPlayer),
-                   8] <- input$team
-    save(projections.df, file='projections.RData')
+
+    vars$projections.df[vars$projections.df$Player == 
+                  isolate(input$draftPlayer), 8] <- isolate(input$team)
+    saveRDS(vars$projections.df,file='projections.rds')
   })
   
   # Render table of all players
   output$players <- renderTable({
     draftPlayer()
-    projections.df
+    vars$projections.df
   })
   
   # Render roster of current chosen team
-  # TODO: fix this so it isn't team specific
-  output$team1 <- renderTable({
+  output$team <- renderTable({
     draftPlayer()
-    subset(projections.df, fantasyTeam == 'Team 1')
+    subset(vars$projections.df, fantasyTeam == input$team)
   })
   
   output$undraftedPlayers <- renderUI({
     draftPlayer()
     
     # Update
-    undrafted <- sort(subset(projections.df, is.na(fantasyTeam))[,1])
+    undrafted <- sort(subset(vars$projections.df, is.na(fantasyTeam))[,1])
     selectInput('draftPlayer',
                 label='Undrafted players',
                 choices=undrafted)

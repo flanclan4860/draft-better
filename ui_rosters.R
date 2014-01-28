@@ -1,6 +1,6 @@
 tabPanel(
   'Rosters',
   
-  tableOutput('team1')
+  tableOutput('team')
   
 )
