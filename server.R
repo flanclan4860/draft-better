@@ -1,30 +1,41 @@
 library(shiny)
 
+# Load the projection data.
 load('projections.RData')
 
 shinyServer(function(input, output) {
   
-  
-  # Listen for additions to teams
-  observe({
-    if (input$add < 1){
+  # Reactive expression to trigger changes when a player is drafted
+  draftPlayer <- reactive({
+    if (input$add == 0) {
       return()
     }
-    
-    # The add button was clicked, so update the player's team and rosters
-    isolate({
-      projections.df[projections.df$Player == input$playerChosen, 
-                     'fantasyTeam'] = input$teamChosen
-      save(projections.df, file='projections.RData')
-    })
+    projections.df[projections.df$Player == isolate(input$draftPlayer),
+                   8] <- input$team
+    save(projections.df, file='projections.RData')
   })
   
+  # Render table of all players
+  output$players <- renderTable({
+    draftPlayer()
+    projections.df
+  })
+  
+  # Render roster of current chosen team
+  # TODO: fix this so it isn't team specific
   output$team1 <- renderTable({
-    subset(projections.df, fantasyTeam == 'Team 1')[,1:7]
+    draftPlayer()
+    subset(projections.df, fantasyTeam == 'Team 1')
   })
   
-  output$team2 <- renderTable({
-    subset(projections.df, fantasyTeam == 'Team 2')[,1:7]
+  output$undraftedPlayers <- renderUI({
+    draftPlayer()
+    
+    # Update
+    undrafted <- sort(subset(projections.df, is.na(fantasyTeam))[,1])
+    selectInput('draftPlayer',
+                label='Undrafted players',
+                choices=undrafted)
   })
   
 })
