@@ -63,7 +63,8 @@ load_data <- function() {
                           fantasyTeam=rep('', n))
   
   # Set fantasy teams as factors
-  projections.df$fantasyTeam <- as.factor(projections.df$fantasyTeam,
+  # NOT WORKING. I need to learn more about factors...
+  # projections.df$fantasyTeam <- as.factor(projections.df$fantasyTeam,
                                           levels=teams)
   
   # Set draft pick as integer
