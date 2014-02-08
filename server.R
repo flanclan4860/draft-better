@@ -37,7 +37,7 @@ shinyServer(function(input, output) {
   })
   
   # Render roster of current chosen team
-  output$team <- renderTable({
+  output$team <- renderDataTable({
     draftPlayer()
     subset(vars$projections.df, fantasyTeam == input$team)
   })
@@ -47,7 +47,7 @@ shinyServer(function(input, output) {
     draftPlayer()
     
     # Update
-    undrafted <- sort(subset(vars$projections.df, is.na(fantasyTeam))[,1])
+    undrafted <- sort(subset(vars$projections.df, fantasyTeam == '')[,2])
     selectInput('draftPlayer',
                 label='Undrafted players',
                 choices=undrafted)

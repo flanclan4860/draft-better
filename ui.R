@@ -1,4 +1,5 @@
 library(shiny)
+source('settings.R', local=TRUE)
 
 # Define UI
 shinyUI(pageWithSidebar(
@@ -23,7 +24,7 @@ shinyUI(pageWithSidebar(
       
       tabPanel(
         'Players',
-        tableOutput('players'))
+        dataTableOutput('players'))
     )
   )
 ))
