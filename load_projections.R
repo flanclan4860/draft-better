@@ -3,6 +3,7 @@
 
 library(XML)
 library(reshape2)
+library(stringr)
 source('settings.R', local=TRUE)
 
 # Function to load ESPN's projected statistics
@@ -65,7 +66,7 @@ load_data <- function() {
   # Set fantasy teams as factors
   # NOT WORKING. I need to learn more about factors...
   # projections.df$fantasyTeam <- as.factor(projections.df$fantasyTeam,
-                                          levels=teams)
+  #                                        levels=teams)
   
   # Set draft pick as integer
   projections.df$drafted <- as.integer(projections.df$drafted)
