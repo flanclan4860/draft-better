@@ -152,7 +152,7 @@ load_data_fantasypros <- function() {
 }
 
 # Load data
-projections.df <- load_data()
+projections.df <- load_data_fantasypros()
 
 # Save data frame to an .rds file
 saveRDS(projections.df, file='projections.rds')
