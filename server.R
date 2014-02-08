@@ -31,7 +31,7 @@ shinyServer(function(input, output) {
   })
   
   # Render table of all players
-  output$players <- renderTable({
+  output$players <- renderDataTable({
     draftPlayer()
     vars$projections.df
   })
