@@ -75,6 +75,7 @@ load_data_ESPN <- function() {
 }
 
 
+
 load_data_fantasypros <- function() {
   # Load FantasyPro's hitting projections.
   # This function is not particularly efficient, but it works.
@@ -86,7 +87,6 @@ load_data_fantasypros <- function() {
   
   
   # Split the player column into useful pieces.
-  # This part in particular could be way better; I'm learning.
   
   # Rename first column
   colnames(projections.df)[1] <- 'Player'
@@ -100,35 +100,29 @@ load_data_fantasypros <- function() {
                                         names=c('Player', 'Team.Pos')),
                                projections.df[,2:16]))
   
+  # Remove )'s
   projections.df$Team.Pos <- str_replace_all(projections.df$Team.Pos, '\\)', '')
   
   # Split team/pos column into team and pos
   projections.df <- with(projections.df,
                          cbind(Player,
                                colsplit(projections.df$Team.Pos,
-                                        pattern='\\,',
+                                        pattern=',',
                                         names=c('Team', 'Pos')),
                                projections.df[,3:17]))
   
-  # Split positions
+  # Take care of players that don't have a team
+  to.fix <- projections.df$Pos == ''
+  projections.df[to.fix, 3] <- projections.df[to.fix, 2]
+  projections.df[to.fix, 2] <- ''
+  
+  # Split positions, delimited by either / or ,
   projections.df <- with(projections.df,
                          cbind(Player, Team,
                                colsplit(projections.df$Pos,
-                                        pattern='\\/',
-                                        names=c('Pos1', 'Pos2')),
+                                        pattern='*[/,]',
+                                        names=c('Pos1', 'Pos2', 'Pos3', 'Pos4')),
                                projections.df[,4:18]))
-  projections.df <- with(projections.df,
-                         cbind(Player, Team, Pos1, 
-                               colsplit(projections.df$Pos2,
-                                        pattern='\\/',
-                                        names=c('Pos2', 'Pos3')),
-                               projections.df[,5:19]))
-  projections.df <- with(projections.df,
-                         cbind(Player, Team, Pos1, Pos2,
-                               colsplit(projections.df$Pos3,
-                                        pattern='\\/',
-                                        names=c('Pos3', 'Pos4')),
-                               projections.df[,6:20]))
   
   # Convert positions and teams to factors
   projections.df$Team <- as.factor(projections.df$Team)
