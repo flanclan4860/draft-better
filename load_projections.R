@@ -74,6 +74,7 @@ load_data_ESPN <- function() {
   projections.df
 }
 
+
 load_data_fantasypros <- function() {
   # Load FantasyPro's hitting projections.
   # This function is not particularly efficient, but it works.
@@ -90,7 +91,7 @@ load_data_fantasypros <- function() {
   # Rename first column
   colnames(projections.df)[1] <- 'Player'
   
-  # TODO: strip end parentheses and white space
+  # TODO: strip white space
   
   # Split player column into name and team/pos
   projections.df <- with(projections.df,
@@ -98,6 +99,8 @@ load_data_fantasypros <- function() {
                                         pattern='\\(',
                                         names=c('Player', 'Team.Pos')),
                                projections.df[,2:16]))
+  
+  projections.df$Team.Pos <- str_replace_all(projections.df$Team.Pos, '\\)', '')
   
   # Split team/pos column into team and pos
   projections.df <- with(projections.df,
